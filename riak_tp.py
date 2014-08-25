@@ -8,8 +8,11 @@ post_bucket = client.bucket('Posts')
 user_post_bucket = client.bucket('Users')
 
 # Function
+def get_post(id):
+    return post_bucket.get(id)
+
 def leer_post(id):
-    return post_bucket.get(id).data['body']
+    print str(get_post(id).data['body'])
     
 def crear_post(post_id, user_id, title, body):
     user = user_post_bucket.get(user_id)
@@ -32,31 +35,55 @@ def crear_post(post_id, user_id, title, body):
     user.store()    
     post.store()
 
-#Comandos del programa
+def borrar_post(id):
+    post_bucket.delete(id)
 
-#Crear un Post (post_id, usuario, titulo, body)
-if sys.argv[1] == "crear_post":
+def listar_posts(id):
+    post_ids = user_post_bucket.get(id).data['posts']
+    for post_id in post_ids:
+        leer_post(post_id)
+
+def agregar_comentario(id, comentario):
+    post = get_post(id)
+    post.data['comments'].append(comentario)
+    post.store()
+
+def listar_comentarios(id):
+    comments = get_post(id).data['comments']
+    for comment in comments:
+        print str(comment)
+
+def mostrar_ayuda():
+    print "Comandos:"
+    print "> crear_post <post_id> <user_id> <titulo> <cuerpo>"
+    print "> leer_post <post_id>"
+    print "> listar_posts <user_id>"
+    print "> agregar_comentario <post_id> <comentario>"
+    print "> listar_comentarios <post_id>"
+
+#Ejecucion de acciones
+if len(sys.argv) == 1:
+    mostrar_ayuda()
+
+elif sys.argv[1] == "crear_post":
 	crear_post(sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5])
 
 #Leer un post(post_id)	
 elif sys.argv[1] == "leer_post":
-    print str(leer_post(sys.argv[2]))
+    leer_post(sys.argv[2])
 
 #Borrar un post(post_id)
 elif sys.argv[1] == "borrar_post":
-    post_bucket.delete(sys.argv[2])
+    borrar_post(sys.argv[2])
     
 elif sys.argv[1] == "listar_posts":
-    post_ids = user_post_bucket.get(sys.argv[2]).data['posts']
-    for post_id in post_ids:
-        print str(leer_post(post_id))
+    listar_posts(sys.argv[2])
 
-if sys.argv[1] == "agregar_comentario":
-    post = post_bucket.get(sys.argv[2])
-    post.data['comments'].append(sys.argv[3])
-    post.store()
+elif sys.argv[1] == "agregar_comentario":
+    agregar_comentario(sys.argv[2], sys.argv[3])
 
-if sys.argv[1] == "listar_comentarios":
-    comments = post_bucket.get(sys.argv[2]).data['comments']
-    for comment in comments:
-        print str(comment)
+elif sys.argv[1] == "listar_comentarios":
+    listar_comentarios(sys.argv[2])
+
+else:
+    print "operacion invalida"
