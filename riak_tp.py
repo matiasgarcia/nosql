@@ -8,10 +8,10 @@ post_bucket = client.bucket('Posts')
 user_post_bucket = client.bucket('Users')
 
 # Function
-def leerPost(id):
+def leer_post(id):
     return post_bucket.get(id).data['body']
     
-def crearPost(post_id, user_id, title, body):
+def crear_post(post_id, user_id, title, body):
     user = user_post_bucket.get(user_id)
     if user.data is None:
         user.data = {
@@ -35,28 +35,28 @@ def crearPost(post_id, user_id, title, body):
 #Comandos del programa
 
 #Crear un Post (post_id, usuario, titulo, body)
-if sys.argv[1] == "crearPost":
-	crearPost(sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5])
+if sys.argv[1] == "crear_post":
+	crear_post(sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5])
 
 #Leer un post(post_id)	
-elif sys.argv[1] == "leerPost":
-    print str(leerPost(sys.argv[2]))
+elif sys.argv[1] == "leer_post":
+    print str(leer_post(sys.argv[2]))
 
 #Borrar un post(post_id)
-elif sys.argv[1] == "borrarPost":
+elif sys.argv[1] == "borrar_post":
     post_bucket.delete(sys.argv[2])
     
-elif sys.argv[1] == "listarPosts":
+elif sys.argv[1] == "listar_posts":
     post_ids = user_post_bucket.get(sys.argv[2]).data['posts']
     for post_id in post_ids:
-        print str(leerPost(post_id))
+        print str(leer_post(post_id))
 
-if sys.argv[1] == "agregarComentario":
+if sys.argv[1] == "agregar_comentario":
     post = post_bucket.get(sys.argv[2])
     post.data['comments'].append(sys.argv[3])
     post.store()
 
-if sys.argv[1] == "listarComentarios":
+if sys.argv[1] == "listar_comentarios":
     comments = post_bucket.get(sys.argv[2]).data['comments']
     for comment in comments:
         print str(comment)
