@@ -12,7 +12,12 @@ def get_post(id):
     return post_bucket.get(id)
 
 def leer_post(id):
-    print str(get_post(id).data['body'])
+    post = get_post(id).data
+    print 'Id: ' + id
+    print 'Titulo: ' + post['title']
+    print 'Cuerpo: ' + post['body']
+    print 'Comentarios (' + str(len(post['comments'])) + ')'
+    print '------------------------------'
     
 def crear_post(post_id, user_id, title, body):
     user = user_post_bucket.get(user_id)
@@ -35,10 +40,14 @@ def crear_post(post_id, user_id, title, body):
     user.store()    
     post.store()
 
+    print 'Se creo el post ' + post_id
+
 def borrar_post(id):
     post_bucket.delete(id)
+    print 'Se borro el post exitosamente'
 
 def listar_posts(id):
+    print 'Los post del usuario #' + id + ' son:'
     post_ids = user_post_bucket.get(id).data['posts']
     for post_id in post_ids:
         leer_post(post_id)
@@ -47,8 +56,10 @@ def agregar_comentario(id, comentario):
     post = get_post(id)
     post.data['comments'].append(comentario)
     post.store()
+    'Se agrego el comentario al post ' + id
 
 def listar_comentarios(id):
+    print 'Los comentarios del post #' + id + ' son: '
     comments = get_post(id).data['comments']
     for comment in comments:
         print str(comment)
