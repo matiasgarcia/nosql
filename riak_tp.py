@@ -27,8 +27,8 @@ def crear_post(post_id, user_id, title, body):
                 'posts': []
             }
     
-    user.data['posts'].append(post_id)
-    
+    user.data['posts'] = filter(lambda post: str(post['post_id']) != str(post_id), user.data['posts'])
+
     post = post_bucket.new(post_id, data = {
             'post_id': post_id, 
             'user_id': user_id, 
