@@ -29,6 +29,11 @@ def crear_post(post_id, user_id, title, body):
     
     user.data['posts'] = filter(lambda post: str(post['post_id']) != str(post_id), user.data['posts'])
 
+    user.data['posts'].append({
+        'post_id' : post_id,
+        'title' : title
+    })
+
     post = post_bucket.new(post_id, data = {
             'post_id': post_id, 
             'user_id': user_id, 
@@ -48,9 +53,9 @@ def borrar_post(id):
 
 def listar_posts(id):
     print 'Los post del usuario #' + id + ' son:'
-    post_ids = user_post_bucket.get(id).data['posts']
-    for post_id in post_ids:
-        leer_post(post_id)
+    posts = user_post_bucket.get(id).data['posts']
+    for post in posts:
+        print 'Post # ' + str(post['post_id'] )+ '; Titulo: ' + str(post['title'])
 
 def agregar_comentario(id, comentario):
     post = get_post(id)
