@@ -65,7 +65,7 @@ db.socios.find();
 //ii. Obtener todos los documentos de forma organizada (pretty).
 db.socios.find().pretty();
 //iii. Obtener un array con los primeros 3 documentos de una colección.
-db.socios.find().limit(3);
+db.socios.find().limit(3).toArray();
 //iv. Obtener todos los apellidos y nombres de los socios que practican RUGBY.
 db.socios.find(
 	{deportes: 
@@ -78,7 +78,7 @@ db.socios.find(
 		apellido:1
 	});
 //v. Obtener los documentos en un array los próximos 5 documentos, a partir del documento 5.
-db.socios.find().skip(5).limit(5);
+db.socios.find().skip(4).limit(5).toArray();
 //vi. Obtener todos los documentos con todos sus atributos donde en las cuotas su vencimiento sea “01/02/2014”.
 cuotasConfechaDeVencimiento = {'cuotas.fecha_vencimiento': ISODate("2014-02-01")};
 db.socios.find(cuotasConfechaDeVencimiento);
@@ -101,7 +101,6 @@ db.socios.find(
 query = {
 		nro_socio: {$gt: 3}, 
 		'cuotas.fecha_emision': { $gte: ISODate("2014-01-01") } 
-		}
 	};
 db.socios.find(query).pretty();
 //x. Idem consulta anterior, pero sólo mostrar los atributos apellido, nombre y dni.
@@ -114,7 +113,7 @@ db.socios.update(query, {$set: {codigoInterno: 1001}}, {multi:true});
 tieneElCampoCodigoInterno = {codigoInterno: {$exists:true}};
 db.socios.find(tieneElCampoCodigoInterno).pretty();
 //xiv. Obtener los documentos del punto anterior ordenados en forma descendente por apellido y por nombre.
-db.socios.find(tieneElCampoCodigoInterno).sort({nombre:-1, apellido:-1});
+db.socios.find(tieneElCampoCodigoInterno).sort({apellido:-1, nombre:-1});
 /*xv. Armar un procedimiento en js que implemente un cursor para obtener la siguiente información:
 Nro.: 9999999 Ape. y Nom.: XXXXXXXXXXXXX, XXXlXXXXXXXXX Nro Cuota: 99 Fecha Pago: dd/mm/yyyy
 														Nro Cuota: 99 Fecha Pago: dd/mm/yyyy
