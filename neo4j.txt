@@ -128,7 +128,7 @@ CREATE (a1)-[:ConoceA]->(a2)
 MATCH (a1:Alumno)-[:AsistioA]-(c:Curso)-[:AsistioA]-(a2:Alumno)
 WHERE id(a1) <> id(a2)
 AND NOT (a1)-[:ConoceA]-(a2)
-RETURN a1, a2, c
+RETURN a2
 
 
 /*e)Listado de los conocidos de tus conocidos, hasta longitud 2, e indefinida.*/
