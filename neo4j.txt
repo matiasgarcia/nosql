@@ -1,0 +1,140 @@
+CREATE CONSTRAINT ON (a:Alumno) ASSERT a.nroLegajo IS UNIQUE
+CREATE CONSTRAINT ON (m:Materia) ASSERT m.codMateria IS UNIQUE
+CREATE CONSTRAINT ON (d:Docente) ASSERT d.nroLegajo IS UNIQUE
+
+/*a)Listado de alumnos que cursaron materias juntos, pero en esta materia son de distintos grupos.*/
+/*Fixture*/
+CREATE (a1:Alumno {nroLegajo: 1409359, apellidoYNombre:"Matias García", nroGrupo: 1})
+CREATE (a2:Alumno {nroLegajo: 1203129, apellidoYNombre:"Rodrigo Alfonso", nroGrupo: 1})
+CREATE (a3:Alumno {nroLegajo: 1127721, apellidoYNombre:"Gastón Prieto", nroGrupo: 2})
+CREATE (a4:Alumno {nroLegajo: 1303921, apellidoYNombre:"Tomás Casanueva", nroGrupo: 2})
+
+CREATE (m1:Materia {codMateria: 5000, nombre: "Redes de Información"})
+CREATE (m2:Materia {codMateria: 5010, nombre: "Gerenciamiento de Proyectos"})
+CREATE (m3:Materia {codMateria: 5020, nombre: "Administración Gerencial"})
+CREATE (m4:Materia {codMateria: 5030, nombre: "Simulación"})
+
+CREATE (c1:Curso {nroCurso: 5001, cuatrimestre: "2014-1"})
+CREATE (c2:Curso {nroCurso: 5002, cuatrimestre: "2014-1"})
+CREATE (c3:Curso {nroCurso: 5011, cuatrimestre: "2014-1"})
+CREATE (c4:Curso {nroCurso: 5012, cuatrimestre: "2014-1"})
+CREATE (c5:Curso {nroCurso: 5021, cuatrimestre: "2014-1"})
+CREATE (c6:Curso {nroCurso: 5022, cuatrimestre: "2014-1"})
+CREATE (c7:Curso {nroCurso: 5031, cuatrimestre: "2014-1"})
+
+MATCH (a:Alumno {nroLegajo: 1409359, apellidoYNombre:"Matias García", nroGrupo: 1}), (c:Curso {nroCurso: 5001, cuatrimestre: "2014-1"})
+CREATE (a)-[r:AsistioA]->(c)
+
+MATCH (a:Alumno {nroLegajo: 1303921, apellidoYNombre:"Tomás Casanueva", nroGrupo: 2}), (c:Curso {nroCurso: 5001, cuatrimestre: "2014-1"})
+CREATE (a)-[r:AsistioA]->(c)
+
+MATCH (a:Alumno {nroLegajo: 1203129, apellidoYNombre:"Rodrigo Alfonso", nroGrupo: 1}), (c:Curso {nroCurso: 5021, cuatrimestre: "2014-1"})
+CREATE (a)-[r:AsistioA]->(c)
+
+MATCH (a:Alumno {nroLegajo: 1127721, apellidoYNombre:"Gastón Prieto", nroGrupo: 2}), (c:Curso {nroCurso: 5021, cuatrimestre: "2014-1"})
+CREATE (a)-[r:AsistioA]->(c)
+
+MATCH (a:Alumno {nroLegajo: 1303921, apellidoYNombre:"Tomás Casanueva", nroGrupo: 2}), (c:Curso {nroCurso: 5021, cuatrimestre: "2014-1"})
+CREATE (a)-[r:AsistioA]->(c)
+
+/*Consulta*/
+MATCH (a1:Alumno)-[:AsistioA]-(c:Curso), (a2:Alumno)-[:AsistioA]-(c)
+WHERE a1.nroGrupo <> a2.nroGrupo
+RETURN a1, a2, c.nroCurso
+
+
+/*b)Listado de docentes que dictaron más de una materia*/
+/*Fixture*/
+CREATE (d1:Docente {nroLegajo: 1002, apellidoYNombre: "Federico Koval"})
+CREATE (d2:Docente {nroLegajo: 1003, apellidoYNombre: "Alejandro Echazú"})
+CREATE (d3:Docente {nroLegajo: 1005, apellidoYNombre: "Rubén Sualdea"})
+CREATE (d4:Docente {nroLegajo: 1007, apellidoYNombre: "Gabriela Salem"})
+CREATE (d5:Docente {nroLegajo: 1004, apellidoYNombre: "Silvia Quiroga"})
+CREATE (d6:Docente {nroLegajo: 1006, apellidoYNombre: "Gastón Paccor"})
+
+MATCH (d:Docente {nroLegajo: 1002, apellidoYNombre: "Federico Koval"}), (c:Curso {nroCurso: 5001, cuatrimestre: "2014-1"})
+CREATE (d)-[:Dicta]->(c)
+
+MATCH (d:Docente {nroLegajo: 1003, apellidoYNombre: "Alejandro Echazú"}), (c:Curso {nroCurso: 5002, cuatrimestre: "2014-1"})
+CREATE (d)-[:Dicta]->(c)
+
+MATCH (d:Docente {nroLegajo: 1005, apellidoYNombre: "Rubén Sualdea"}), (c:Curso {nroCurso: 5011, cuatrimestre: "2014-1"})
+CREATE (d)-[:Dicta]->(c)
+
+MATCH (d:Docente {nroLegajo: 1007, apellidoYNombre: "Gabriela Salem"}), (c:Curso {nroCurso: 5012, cuatrimestre: "2014-1"})
+CREATE (d)-[:Dicta]->(c)
+
+MATCH (d:Docente {nroLegajo: 1005, apellidoYNombre: "Rubén Sualdea"}), (c:Curso {nroCurso: 5021, cuatrimestre: "2014-1"})
+CREATE (d)-[:Dicta]->(c)
+
+MATCH (d:Docente {nroLegajo: 1006, apellidoYNombre: "Gastón Paccor"}), (c:Curso {nroCurso: 5022, cuatrimestre: "2014-1"})
+CREATE (d)-[:Dicta]->(c)
+
+MATCH (d:Docente {nroLegajo: 1004, apellidoYNombre: "Silvia Quiroga"}), (c:Curso {nroCurso: 5031, cuatrimestre: "2014-1"})
+CREATE (d)-[:Dicta]->(c)
+
+MATCH (c:Curso {nroCurso: 5001}), (m:Materia {codMateria: 5000})
+CREATE (c)-[:De]->(m)
+
+MATCH (c:Curso {nroCurso: 5002}), (m:Materia {codMateria: 5000})
+CREATE (c)-[:De]->(m)
+
+MATCH (c:Curso {nroCurso: 5011}), (m:Materia {codMateria: 5010})
+CREATE (c)-[:De]->(m)
+
+MATCH (c:Curso {nroCurso: 5012}), (m:Materia {codMateria: 5010})
+CREATE (c)-[:De]->(m)
+
+MATCH (c:Curso {nroCurso: 5021}), (m:Materia {codMateria: 5020})
+CREATE (c)-[:De]->(m)
+
+MATCH (c:Curso {nroCurso: 5022}), (m:Materia {codMateria: 5020})
+CREATE (c)-[:De]->(m)
+
+MATCH (c:Curso {nroCurso: 5031}), (m:Materia {codMateria: 5030})
+CREATE (c)-[:De]->(m)
+
+/*Consulta*/
+MATCH (d:Docente)-[:Dicta]->(c:Curso), (c:Curso)-[:De]->(m:Materia)
+WITH d, count(m) AS cantidadMaterias
+WHERE cantidadMaterias > 1
+RETURN d.nroLegajo, d.apellidoYNombre, cantidadMaterias
+
+/*c) Promedio de un alumno*/
+/*Fixture*/
+MATCH (a:Alumno {nroLegajo: 1303921}), (m:Materia {codMateria: 5000})
+CREATE (a)-[r:RindioFinal {nota: 5}]->(m)
+
+MATCH (a:Alumno {nroLegajo: 1303921}), (m:Materia {codMateria: 5020})
+CREATE (a)-[r:RindioFinal {nota: 7}]->(m)
+
+/*Consulta*/
+MATCH (a:Alumno {nroLegajo: 1303921})-[r:RindioFinal]-(m)
+WITH r, count(r) AS cantFinales
+RETURN SUM(r.nota)/cantFinales
+
+/*d)Listado para recomendación de alumnos que cursaron en el mismo curso y cuatrimestre pero no se conocen entre sí.*/
+/*Fixture*/
+MATCH (a1:Alumno {nroLegajo: 1409359}), (a2:Alumno {nroLegajo: 1303921})
+CREATE (a1)-[:ConoceA]->(a2)
+
+MATCH (a1:Alumno {nroLegajo: 1409359}), (a2:Alumno {nroLegajo: 1203129})
+CREATE (a1)-[:ConoceA]->(a2)
+
+MATCH (a1:Alumno {nroLegajo: 1127721}), (a2:Alumno {nroLegajo: 1203129})
+CREATE (a1)-[:ConoceA]->(a2)
+
+/*Consulta*/
+MATCH (a1:Alumno)-[:AsistioA]-(c:Curso)-[:AsistioA]-(a2:Alumno)
+WHERE id(a1) <> id(a2)
+AND NOT (a1)-[:ConoceA]-(a2)
+RETURN a1, a2, c
+
+
+/*e)Listado de los conocidos de tus conocidos, hasta longitud 2, e indefinida.*/
+/*Consulta*/
+MATCH (a1:Alumno)-[:ConoceA]->(a2:Alumno), (a2)-[:ConoceA*]-(a3:Alumno)
+RETURN a1, a3
+
+MATCH (a1:Alumno)-[:ConoceA]->(a2:Alumno), (a2)-[:ConoceA*..2]-(a3:Alumno)
+RETURN a1, a3
