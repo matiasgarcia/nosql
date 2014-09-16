@@ -39,7 +39,7 @@ CREATE (a)-[r:AsistioA]->(c)
 
 /*Consulta*/
 MATCH (a1:Alumno)-[:AsistioA]-(c:Curso), (a2:Alumno)-[:AsistioA]-(c)
-WHERE a1.nroGrupo <> a2.nroGrupo
+WHERE a1.nroGrupo <> a2.nroGrupo AND a1.nroGrupo < a2.nroGrupo
 RETURN a1, a2, c.nroCurso
 
 
