@@ -1,4 +1,4 @@
-db = db.getSiblingDB("GestionClub")
+db = db.getSiblingDB("GestionClub");
 //Punto 1
 //i. Obtener todos los documentos de la colección que contenga a los socios.
 db.socios.find();
