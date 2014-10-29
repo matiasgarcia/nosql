@@ -9,6 +9,18 @@ db.socios.aggregate([
 	}}
 ]);
 
+//2. Basado en la consulta del punto 1, mostrar sólo el deporte que tenga el mayor ingreso.
+db.socios.aggregate([ 
+	{ $unwind: "$deportes" }, 
+	{ $unwind: "$cuotas" }, 
+	{ $group: 
+		{_id:"$deportes", 
+		total: {$sum: "$cuotas.importe"}
+	}},
+	{$sort:{total:-1}},
+	{$limit:1}
+]);
+
 //3)Basado en la consulta del punto 1, mostrar sólo los deportes que tengan un ingreso superior a un determinado valor (elegimos $900)	.
 db.socios.aggregate([ 
 	{ $unwind: "$deportes" }, 
