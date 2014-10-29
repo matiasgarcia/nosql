@@ -59,7 +59,7 @@ db.socios.aggregate([
 db.socios.aggregate([ 
 	{ $match: 
 		{nro_socio: 
-			{$gt: 120000}
+			{$gte: 120000}
 		}
 	},
 	{ $group: 
