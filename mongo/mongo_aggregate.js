@@ -46,7 +46,7 @@ db.socios.aggregate([
 /*5)Basados en la consulta del punto 4 informar sólo los socios cuyo número de socio es mayor o igual a 120000 (en el caso de no mostrar resultados, 
 poner un número acorde a los datos que poseen).*/
 db.socios.aggregate([ 
-	{ $match: {nro_socio: {$gt: 120000}}},
+	{ $match: {nro_socio: {$gte: 120000}}},
 	{ $unwind: "$deportes" }, 
 	{ $group: 
 		{_id: {apellido:"$apellido", nombre:"$nombre"}, 
