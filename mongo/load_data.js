@@ -1,4 +1,4 @@
-db = db.getSiblingDB("GestionClub")
+db = db.getSiblingDB("GestionClub");
 db.socios.insert({
 	nro_socio: 112323,
 	nombre: "Juan Cruz",
